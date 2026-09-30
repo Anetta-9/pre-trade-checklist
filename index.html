@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pre-Trade Risk Checklist | ForexInfo.ai</title>
+<meta name="description" content="Free pre-trade risk checklist for forex and gold traders. Works out your position size, risk and risk:reward, then checks your trade against your own rules before you place it.">
+<style>
+:root{
+  --bg:#131722; --panel:#1E222D; --line:#262B38; --line-2:#363C4E;
+  --text:#EAECEF; --body:#D1D4DC; --muted:#A0A3B1; --faint:#787B86;
+  --blue:#2962FF; --blue-hover:#1E4FD1; --bull:#089981; --bear:#F23645; --warn:#F7A600;
+  --radius-lg:12px; --radius-sm:6px;
+  font-family:-apple-system,BlinkMacSystemFont,"Trebuchet MS",Roboto,Ubuntu,"Segoe UI",sans-serif;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--body);font-size:15px;line-height:1.55}
+a{color:var(--blue)}
+a:hover{color:#5B8CFF}
+.wrap{max-width:1120px;margin:0 auto;padding:32px 20px 64px}
+header.top{display:flex;justify-content:space-between;align-items:baseline;gap:16px;flex-wrap:wrap;margin-bottom:8px}
+.brand{color:var(--text);font-weight:700;text-decoration:none;font-size:16px}
+.brand span{color:var(--blue)}
+h1{color:var(--text);font-size:clamp(28px,4vw,40px);line-height:1.15;margin:20px 0 10px;letter-spacing:-.01em}
+.intro{max-width:64ch;color:var(--muted);margin:0 0 28px}
+.layout{display:grid;grid-template-columns:minmax(0,1fr) 360px;gap:28px;align-items:start}
+section.block{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius-lg);padding:22px 22px 18px;margin-bottom:18px}
+section.block h2{color:var(--text);font-size:18px;margin:0 0 4px}
+section.block .hint{color:var(--faint);font-size:13px;margin:0 0 16px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px}
+label.field{display:flex;flex-direction:column;gap:6px;font-size:13px;color:var(--muted)}
+input[type=number],select{background:var(--bg);color:var(--text);border:1px solid var(--line-2);border-radius:var(--radius-sm);padding:10px 12px;font:inherit;font-size:15px;font-variant-numeric:tabular-nums;width:100%}
+input[type=number]:focus,select:focus{outline:2px solid var(--blue);outline-offset:1px;border-color:var(--blue)}
+.field small{color:var(--faint);font-size:12px}
+.hidden{display:none!important}
+.checks{list-style:none;margin:0;padding:0}
+.checks li{border-top:1px solid var(--line)}
+.checks li:first-child{border-top:0}
+.checks label{display:flex;gap:12px;align-items:flex-start;padding:11px 2px;cursor:pointer;color:var(--body)}
+.checks input{appearance:none;flex:none;width:20px;height:20px;margin:2px 0 0;border:1.5px solid var(--line-2);border-radius:5px;background:var(--bg);display:grid;place-content:center;cursor:pointer}
+.checks input::after{content:"";width:10px;height:6px;border-left:2px solid #fff;border-bottom:2px solid #fff;transform:rotate(-45deg) translate(1px,-1px);opacity:0}
+.checks input:checked{background:var(--bull);border-color:var(--bull)}
+.checks input:checked::after{opacity:1}
+.checks input:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
+.checks .sub{display:block;color:var(--faint);font-size:13px}
+/* Order ticket: the one bold element */
+.ticket{position:sticky;top:20px;background:var(--panel);border:1px solid var(--line);border-radius:var(--radius-lg);overflow:hidden}
+.ticket-head{padding:18px 20px 16px;border-bottom:1px dashed var(--line-2)}
+.ticket-head .k{color:var(--faint);font-size:13px}
+.lots{color:var(--text);font-size:52px;font-weight:700;line-height:1;margin-top:6px;font-variant-numeric:tabular-nums;letter-spacing:-.02em}
+.lots small{font-size:18px;color:var(--muted);font-weight:600;margin-left:6px;letter-spacing:0}
+.stats{display:grid;grid-template-columns:1fr 1fr;border-bottom:1px dashed var(--line-2)}
+.stat{padding:12px 20px}
+.stat:nth-child(odd){border-right:1px solid var(--line)}
+.stat:nth-child(n+3){border-top:1px solid var(--line)}
+.stat .k{color:var(--faint);font-size:12px}
+.stat .v{color:var(--text);font-size:17px;font-weight:600;font-variant-numeric:tabular-nums}
+.verdict{padding:18px 20px 20px;border-left:4px solid var(--line-2)}
+.verdict.go{border-left-color:var(--bull)}
+.verdict.stop{border-left-color:var(--bear)}
+.verdict h3{margin:0 0 4px;font-size:20px;color:var(--text)}
+.verdict.go h3{color:var(--bull)}
+.verdict.stop h3{color:var(--bear)}
+.verdict p{margin:0;color:var(--muted);font-size:14px}
+.open{list-style:none;margin:12px 0 0;padding:0;font-size:14px}
+.open li{padding:6px 0 6px 18px;position:relative;color:var(--body)}
+.open li::before{content:"";position:absolute;left:2px;top:13px;width:7px;height:7px;border-radius:50%;background:var(--bear)}
+.open li.warn::before{background:var(--warn)}
+.actions{display:flex;gap:10px;padding:0 20px 20px}
+button{font:inherit;font-size:14px;font-weight:600;border-radius:var(--radius-sm);padding:10px 14px;cursor:pointer;border:1px solid var(--line-2);background:transparent;color:var(--text)}
+button.primary{background:var(--blue);border-color:var(--blue);color:#fff}
+button.primary:hover{background:var(--blue-hover)}
+button:hover{border-color:var(--blue)}
+button:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
+footer{margin-top:40px;padding-top:18px;border-top:1px solid var(--line);color:var(--faint);font-size:13px;max-width:80ch}
+footer p{margin:0 0 8px}
+@media (max-width:900px){.layout{grid-template-columns:1fr}.ticket{position:static}}
+@media (prefers-reduced-motion:no-preference){.verdict{transition:border-color .25s}}
+@media print{
+  :root{--bg:#fff;--panel:#fff;--line:#ccc;--line-2:#999;--text:#000;--body:#111;--muted:#333;--faint:#555}
+  .actions,.brand{display:none}
+  .layout{grid-template-columns:1fr}
+  .ticket{position:static;break-inside:avoid}
+  section.block{break-inside:avoid}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <a class="brand" href="https://forexinfo.ai" target="_blank" rel="noopener">ForexInfo<span>.ai</span></a>
+  </header>
+  <h1>Pre-trade risk checklist</h1>
+  <p class="intro">Enter the trade you are about to place. The checklist works out your position size and risk, tests the trade against your own limits, and only clears it when every check passes. Nothing you type leaves your browser.</p>
+
+  <div class="layout">
+    <main>
+      <section class="block" aria-labelledby="h-rules">
+        <h2 id="h-rules">Your rules</h2>
+        <p class="hint">Set these once. They are remembered in this browser.</p>
+        <div class="grid">
+          <label class="field">Account balance ($)<input type="number" id="balance" min="0" step="any" value="10000"></label>
+          <label class="field">Risk per trade (%)<input type="number" id="riskPct" min="0" step="0.1" value="1"></label>
+          <label class="field">Max risk per trade (%)<input type="number" id="maxRiskPct" min="0" step="0.1" value="2"></label>
+          <label class="field">Minimum risk:reward<input type="number" id="minRR" min="0" step="0.1" value="2"></label>
+          <label class="field">Daily loss limit (%)<input type="number" id="dailyLimitPct" min="0" step="0.1" value="3"></label>
+          <label class="field">Lost so far today ($)<input type="number" id="lostToday" min="0" step="any" value="0"><small>Enter as a positive number</small></label>
+        </div>
+      </section>
+
+      <section class="block" aria-labelledby="h-trade">
+        <h2 id="h-trade">The trade</h2>
+        <p class="hint">Direction is read from your stop: a stop below entry is a long, above entry is a short. Prices for a USD account.</p>
+        <div class="grid">
+          <label class="field">Instrument
+            <select id="symbol">
+              <option>EURUSD</option><option>GBPUSD</option><option>AUDUSD</option><option>NZDUSD</option>
+              <option>USDJPY</option><option>USDCAD</option><option>USDCHF</option>
+              <option>EURGBP</option><option>EURJPY</option><option>GBPJPY</option>
+              <option>XAUUSD</option><option>XAGUSD</option>
+            </select>
+          </label>
+          <label class="field">Entry price<input type="number" id="entry" step="any" placeholder="e.g. 1.0850"></label>
+          <label class="field">Stop loss<input type="number" id="stop" step="any" placeholder="e.g. 1.0820"></label>
+          <label class="field">Take profit<input type="number" id="target" step="any" placeholder="e.g. 1.0910"></label>
+          <label class="field hidden" id="convWrap"><span id="convLabel">Current rate</span><input type="number" id="conv" step="any"><small id="convHint"></small></label>
+        </div>
+      </section>
+
+      <section class="block" aria-labelledby="h-plan">
+        <h2 id="h-plan">Plan</h2>
+        <p class="hint">Would you take this trade if you had to explain it to someone first?</p>
+        <ul class="checks" data-group="plan"></ul>
+      </section>
+      <section class="block" aria-labelledby="h-market">
+        <h2 id="h-market">Market conditions</h2>
+        <p class="hint">Check the <a href="https://forexinfo.ai/economic-calendar/" target="_blank" rel="noopener">economic calendar</a> before you tick the first box.</p>
+        <ul class="checks" data-group="market"></ul>
+      </section>
+      <section class="block" aria-labelledby="h-mind">
+        <h2 id="h-mind">State of mind</h2>
+        <p class="hint">Most rule breaks happen here, not on the chart.</p>
+        <ul class="checks" data-group="mind"></ul>
+      </section>
+    </main>
+
+    <aside class="ticket" aria-live="polite">
+      <div class="ticket-head">
+        <div class="k">Position size</div>
+        <div class="lots" id="outLots">0.00<small>lots</small></div>
+      </div>
+      <div class="stats">
+        <div class="stat"><div class="k">Risk</div><div class="v" id="outRisk">-</div></div>
+        <div class="stat"><div class="k">Potential reward</div><div class="v" id="outReward">-</div></div>
+        <div class="stat"><div class="k">Stop distance</div><div class="v" id="outStop">-</div></div>
+        <div class="stat"><div class="k">Risk:reward</div><div class="v" id="outRR">-</div></div>
+      </div>
+      <div class="verdict" id="verdict">
+        <h3 id="verdictTitle">Fill in the trade</h3>
+        <p id="verdictText">Enter entry, stop loss and take profit to size the position.</p>
+        <ul class="open" id="openList"></ul>
+      </div>
+      <div class="actions">
+        <button type="button" class="primary" id="resetBtn">Clear for next trade</button>
+        <button type="button" id="printBtn">Print</button>
+      </div>
+    </aside>
+  </div>
+
+  <footer>
+    <p>Free tool by <a href="https://forexinfo.ai" target="_blank" rel="noopener">ForexInfo.ai</a>. Pip values assume a USD account and standard contract sizes (100,000 units per forex lot, 100 oz gold with a $0.10 pip, 5,000 oz silver with a $0.01 pip). Brokers differ, so confirm on your platform before trading.</p>
+    <p>For educational use only. This is not financial advice. Forex and gold trading on margin carries a high level of risk and you can lose money rapidly due to leverage.</p>
+  </footer>
+</div>
+
+<script>
+(function(){
+  "use strict";
+  // pipSize, contract units, how to get USD value of one pip per 1.00 lot
+  var SPECS={
+    EURUSD:{pip:0.0001,type:"usdQuote"},GBPUSD:{pip:0.0001,type:"usdQuote"},AUDUSD:{pip:0.0001,type:"usdQuote"},NZDUSD:{pip:0.0001,type:"usdQuote"},
+    USDJPY:{pip:0.01,type:"usdBase"},USDCAD:{pip:0.0001,type:"usdBase"},USDCHF:{pip:0.0001,type:"usdBase"},
+    EURGBP:{pip:0.0001,type:"cross",conv:"GBPUSD",mode:"mul",hint:"Needed to convert GBP pip value to USD"},
+    EURJPY:{pip:0.01,type:"cross",conv:"USDJPY",mode:"div",hint:"Needed to convert JPY pip value to USD"},
+    GBPJPY:{pip:0.01,type:"cross",conv:"USDJPY",mode:"div",hint:"Needed to convert JPY pip value to USD"},
+    XAUUSD:{pip:0.1,type:"fixed",value:10},XAGUSD:{pip:0.01,type:"fixed",value:50}
+  };
+  var CHECKS=[
+    {g:"plan",id:"setup",t:"This trade matches a setup in my trading plan"},
+    {g:"plan",id:"predefined",t:"Entry, stop and target were decided before I opened the order window"},
+    {g:"plan",id:"logicalStop",t:"My stop sits where the trade idea is proven wrong",s:"Not a round number of pips picked to make the size fit"},
+    {g:"market",id:"news",t:"No high-impact news for either currency in the next hour"},
+    {g:"market",id:"spread",t:"The spread is normal for this time of day"},
+    {g:"market",id:"htf",t:"I have checked the higher timeframe trend"},
+    {g:"market",id:"correlated",t:"I am not doubling up on a correlated position",s:"For example long EURUSD and long GBPUSD at the same time"},
+    {g:"mind",id:"revenge",t:"I am not trying to win back an earlier loss"},
+    {g:"mind",id:"accept",t:"I accept losing the full risk amount on this trade"}
+  ];
+  var $=function(id){return document.getElementById(id);};
+  var RULE_IDS=["balance","riskPct","maxRiskPct","minRR","dailyLimitPct"];
+  var store={get:function(k){try{return localStorage.getItem(k);}catch(e){return null;}},set:function(k,v){try{localStorage.setItem(k,v);}catch(e){}}};
+
+  // build checkboxes
+  CHECKS.forEach(function(c){
+    var ul=document.querySelector('.checks[data-group="'+c.g+'"]');
+    var li=document.createElement("li");
+    li.innerHTML='<label><input type="checkbox" id="chk-'+c.id+'"><span>'+c.t+(c.s?'<span class="sub">'+c.s+'</span>':'')+'</span></label>';
+    ul.appendChild(li);
+  });
+
+  // restore rules
+  RULE_IDS.forEach(function(id){var v=store.get("fi-ptc-"+id); if(v!==null&&v!=="") $(id).value=v;});
+
+  function num(id){var v=parseFloat($(id).value); return isFinite(v)?v:NaN;}
+  function money(v){return (v<0?"-$":"$")+Math.abs(v).toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2});}
+  function fmt(v,d){return v.toLocaleString("en-US",{minimumFractionDigits:d,maximumFractionDigits:d});}
+
+  function pipValue(sym,entry){
+    var s=SPECS[sym];
+    if(s.type==="usdQuote") return s.pip*100000; // $10
+    if(s.type==="fixed") return s.value;
+    if(s.type==="usdBase") return entry>0 ? s.pip*100000/entry : NaN;
+    var r=num("conv"); if(!(r>0)) return NaN;
+    return s.mode==="mul" ? s.pip*100000*r : s.pip*100000/r;
+  }
+
+  function updateConv(){
+    var s=SPECS[$("symbol").value];
+    if(s.type==="cross"){
+      $("convWrap").classList.remove("hidden");
+      $("convLabel").textContent="Current "+s.conv.slice(0,3)+"/"+s.conv.slice(3)+" rate";
+      $("convHint").textContent=s.hint;
+    } else $("convWrap").classList.add("hidden");
+  }
+
+  function render(){
+    RULE_IDS.forEach(function(id){store.set("fi-ptc-"+id,$(id).value);});
+    var sym=$("symbol").value, spec=SPECS[sym];
+    var bal=num("balance"), riskPct=num("riskPct"), maxRisk=num("maxRiskPct"), minRR=num("minRR"), dayPct=num("dailyLimitPct");
+    var lost=Math.abs(num("lostToday")||0);
+    var entry=num("entry"), stop=num("stop"), target=num("target");
+    var open=[], warn=[];
+
+    var ready=bal>0 && riskPct>0 && entry>0 && stop>0 && target>0 && entry!==stop;
+    var pv=ready?pipValue(sym,entry):NaN;
+    if(ready && !(pv>0)){ ready=false; open.push("Enter the current "+spec.conv.slice(0,3)+"/"+spec.conv.slice(3)+" rate"); }
+
+    var lots=0, risk=NaN, reward=NaN, stopPips=NaN, rr=NaN;
+    if(ready){
+      var isLong=stop<entry;
+      stopPips=Math.abs(entry-stop)/spec.pip;
+      var tgtPips=Math.abs(target-entry)/spec.pip;
+      rr=tgtPips/stopPips;
+      var riskBudget=bal*riskPct/100;
+      lots=Math.floor(riskBudget/(stopPips*pv)*100+1e-9)/100;
+      risk=lots*stopPips*pv; reward=lots*tgtPips*pv;
+      var targetOk=isLong ? target>entry : target<entry;
+
+      if(!targetOk) open.push("Take profit is on the same side as the stop");
+      if(lots<0.01) open.push("Stop is too wide for your risk: position would be under 0.01 lots");
+      if(riskPct>maxRisk) open.push("Risk per trade ("+fmt(riskPct,1)+"%) is above your maximum of "+fmt(maxRisk,1)+"%");
+      if(targetOk && rr<minRR) open.push("Risk:reward is 1:"+fmt(rr,2)+", below your minimum of 1:"+fmt(minRR,1));
+      if(dayPct>0){
+        var limit=bal*dayPct/100;
+        if(lost>=limit) open.push("Daily loss limit reached: stop trading for today");
+        else if(lost+(isFinite(risk)?risk:0)>limit+1e-9) open.push("If this trade loses, you break your daily loss limit ("+money(limit)+")");
+      }
+      $("outLots").innerHTML=fmt(lots,2)+'<small>lots</small>';
+      $("outRisk").textContent=money(risk)+" ("+fmt(risk/bal*100,2)+"%)";
+      $("outReward").textContent=targetOk?money(reward):"-";
+      $("outStop").textContent=fmt(stopPips,1)+(spec.type==="fixed"?" pts":" pips");
+      $("outRR").textContent=targetOk?"1:"+fmt(rr,2):"-";
+    } else {
+      $("outLots").innerHTML='0.00<small>lots</small>';
+      ["outRisk","outReward","outStop","outRR"].forEach(function(id){$(id).textContent="-";});
+    }
+
+    var unchecked=CHECKS.filter(function(c){return !$("chk-"+c.id).checked;});
+    unchecked.forEach(function(c){warn.push(c.t);});
+
+    var v=$("verdict"), list=$("openList");
+    list.innerHTML="";
+    open.forEach(function(t){var li=document.createElement("li");li.textContent=t;list.appendChild(li);});
+    warn.forEach(function(t){var li=document.createElement("li");li.className="warn";li.textContent=t;list.appendChild(li);});
+
+    v.classList.remove("go","stop");
+    if(!ready && open.length===0){
+      $("verdictTitle").textContent="Fill in the trade";
+      $("verdictText").textContent="Enter entry, stop loss and take profit to size the position.";
+    } else if(open.length===0 && warn.length===0){
+      v.classList.add("go");
+      $("verdictTitle").textContent="Ready to place";
+      $("verdictText").textContent="Every check passes. Place the order at "+fmt(lots,2)+" lots with the stop already set.";
+    } else {
+      v.classList.add("stop");
+      var n=open.length+warn.length;
+      $("verdictTitle").textContent="Not ready yet";
+      $("verdictText").textContent=n+(n===1?" check is":" checks are")+" still open.";
+    }
+  }
+
+  document.addEventListener("input",render);
+  document.addEventListener("change",function(e){ if(e.target.id==="symbol"){updateConv();} render(); });
+  $("resetBtn").addEventListener("click",function(){
+    ["entry","stop","target","conv"].forEach(function(id){$(id).value="";});
+    CHECKS.forEach(function(c){$("chk-"+c.id).checked=false;});
+    render(); $("entry").focus();
+  });
+  $("printBtn").addEventListener("click",function(){window.print();});
+  updateConv(); render();
+})();
+</script>
+</body>
+</html>
